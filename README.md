@@ -1,1 +1,1 @@
-# PWA Assignment from Udemy course.
+# My PWA playground
