@@ -141,3 +141,27 @@ self.addEventListener("fetch", event => {
   );
 });
 ```
+
+You can provide on demand cache, you could provide the user with a button to save some articles or images offline. You can simple access the caches object in our JS just like in the SW.
+
+You can also provide a fallback page instead of the default browser offline page.
+
+```
+  .catch(function(err) {
+    return caches.open(CACHE_STATIC_NAME).then(function(cache) {
+      return cache.match("/offline.html");
+    });
+  });
+```
+
+## Caching Strategies
+
+- Cache with Network fallback, cache whatever you need even dynamically as the user goes, if they are on a page that is not cache show a fallback page.
+- Cache only - Never go to the network for anything, no dynamic caching etc.
+- Network only - Always go to the network, no service worker.
+- Network with cache fallback - Only reach out to cache if network fails.
+- Cache then Network - Get asset as quickly possible whilst trying to get a new version from the network.
+
+Cache then network, involves access your cache in your js file, making the network request as well and only using the cache if the network doesn't come back before. Most of the time the cache should be quicker but it is possible the network could be quicker which is why we need this sort of flag.
+
+Cache only is a good approach for app shell files, as everytime we update these files we push a new service worker.
