@@ -128,7 +128,7 @@ self.addEventListener("fetch", event => {
       } else {
         //   Dynamic caching as the user uses the app.
         return fetch(event.request)
-            .then(res => {
+            .then(res => {clear
                 return caches.open(CACHE_DYNAMIC_NAME)
                     .then(cache => {
                         cache.put(event.request.url, res.clone())
