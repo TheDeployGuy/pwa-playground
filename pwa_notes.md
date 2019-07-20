@@ -165,3 +165,20 @@ You can also provide a fallback page instead of the default browser offline page
 Cache then network, involves access your cache in your js file, making the network request as well and only using the cache if the network doesn't come back before. Most of the time the cache should be quicker but it is possible the network could be quicker which is why we need this sort of flag.
 
 Cache only is a good approach for app shell files, as everytime we update these files we push a new service worker.
+
+## IndexDB and Dynamic Data
+
+Dynamic Caching is storing assets(base images, pages and other things not relating to data), it is stored in browser cache.
+Caching Dynamic content is storing dynamic usually json data, it is stored in IndexDb (which is a key-value database built into the browser).
+
+### IndexDB
+
+IndexDB is a tranactional Key-Value Database in the Browser. (Transational meaning if one action within a tractions fails none of the actions of that transaction are applied)
+You can store files/blobs as well as json data. (Unstructured data)
+
+The approach is usually to have one Database per app but multiple object stores (like a table)
+
+##### Using IndexDB
+
+The regular IndexDB API is very "callbacky" and can be hard to work with but there is a package called idb which allows us to use promises.
+
