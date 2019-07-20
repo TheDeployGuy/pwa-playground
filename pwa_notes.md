@@ -182,3 +182,90 @@ The approach is usually to have one Database per app but multiple object stores 
 
 The regular IndexDB API is very "callbacky" and can be hard to work with but there is a package called idb which allows us to use promises.
 
+Service workers can import other packages via the `importScripts('path/to/script')` useful for the cas eof importing the idb package.
+
+Storing a json object in indexDB:
+```
+// Setup a connect to idb
+var dbPromise = idb.open('store-name', 1, function(db) {
+  if(!db.objectStoreNames.contains('posts')) {
+    // By specifing a keyPath we can later retrive our store object by id.
+    db.createObjectStore('table-name', {keyPath: 'id'})
+  }
+})
+
+......
+// Later in fetch code;
+var clonedRes = res.clone()
+
+clonedRes.json()
+  .then(function(data) {
+    // Transform any data
+    dbPromise
+      .then(function(db) {
+        // Create a transaction
+        var tx = db.transaction('store-name', 'readwrite');
+        // Open the store
+        var store = tx.objectStore('store-name');
+        store.put(entire object-or-loop-of-each-data);
+        return tx.complete;
+      })
+  })
+
+return res;
+```
+
+Getting data out of IndexDB
+
+```
+function readAllData(store) {
+   return dbPromise
+    .then(function(db) {
+      // Create a transaction
+      var tx = db.transaction(store, 'readwonly');
+      // Open the store
+      var store = tx.objectStore(store);
+      // Do not need to return a transaction since we are only reading.
+      return store.getAll();
+    })
+}
+
+
+readAllData('store-name)
+  .then(function(data) {
+    if (!networkDataRecieved) {
+      console.log('From cache', data);
+      updateUi(data)
+    }
+  })
+```
+
+Handling when item are deleted from the network source. Since using put only overwrites if there you will have a flash of old data.
+```
+  // Once approach is clearing all the data just before you rewrite the data to indexDB
+  function clearAllData(store) {
+   return dbPromise
+    .then(function(db) {
+      // Create a transaction
+      var tx = db.transaction(store, 'readwrite');
+      // Open the store
+      var store = tx.objectStore(store);
+      store.clear();
+      return tx.complete;
+    })
+  }
+  
+  // Deleting a single object.
+  function clearAnItem(store, id) {
+     return dbPromise
+        .then(function(db) {
+      // Create a transaction
+      var tx = db.transaction(store, 'readwrite');
+      // Open the store
+      var store = tx.objectStore(store);
+      store.delete(id);
+      return tx.complete;
+    })
+  }
+```
+
