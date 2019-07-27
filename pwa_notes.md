@@ -269,6 +269,56 @@ Handling when item are deleted from the network source. Since using put only ove
   }
 ```
 
+## Background Sync
+Allow us to send information to the server even when we are offline. It even allows us to send data if the user cloese the app before the data is sent.
+
+This is done as part of a sync task in the SW, e.g in an on click hander we can:
+In the file where you are sending the data to the backend
+```
+  // Check for service worker availablity and for SyncManager available
+  if('serviceWorker' in navigator && 'SyncManager' in window) {
+    navigator.serviceWorker.ready
+      .then(function(sw) {
+        const dataObject { ...some_data_here };
+        // Store our request data in indexDB.
+        writeData('storeName', dataObject)
+          .then(() => {
+            sw.sync.register('ID-OF-SYNC-task');
+          })
+      });
+  } else {
+    // Fallback to send the data anyway incase we do not have access to syncmanager
+    sendDataToBackend()
+  }
+```
+
+In your service worker file
+```
+  // Sync event gets triggered if an internet connection is restablisted / also if we always had an internet connection.
+  self.addEventListener('sync', () => {
+    console.log('[Service Worker] Background Syncing', event);
+    if(event.tag === 'ID-OF-SYNC-task'){
+      console.log('[Service Worker] Syncing ID-OF-SYNC-task');
+      event.waitUntil(
+        readAllDataFromIndexDB('storeName')
+        .then(res => {
+          // Since there may be many posts queued offline, we have to loop
+          for (var dt of data) {
+              //  sendDataToBackend() is just a placeholder function for notes sake.
+             sendDataToBackend()
+              .then(res => {
+                // clean up indexDB objects as we have no sent them.
+                if(res.ok) {
+                  deleteItemFromIndexDB('store-name', dt.id)
+                }
+              })
+          }
+        }) 
+       )
+    }
+  })
+```
+
 Other:
 - Picture element allows you to specify images for different screen sizes.
 - Img srcset is a property on the img element which you can also specify the image size for certain sizes.
