@@ -319,6 +319,11 @@ In your service worker file
   })
 ```
 
+Periodic Sync is coming in the future where you can periodic get data from the server.
+
+
+
+
 Other:
 - Picture element allows you to specify images for different screen sizes.
 - Img srcset is a property on the img element which you can also specify the image size for certain sizes.
