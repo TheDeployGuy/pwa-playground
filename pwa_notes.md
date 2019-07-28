@@ -322,9 +322,72 @@ In your service worker file
 Periodic Sync is coming in the future where you can periodic get data from the server.
 
 
+## Push Notifications
 
+Allows us to push a notification to be sent to the user, it seems like it only supported on android on the chrome browser.
+This is done via a publish and subscription method.
 
-Other:
+Our backend server sends a push notification to the Browser Vendor push server, this browser server then sends a push event to our service worker which it can then react to.
+
+### Notification API
+Before we can use the notification API we need to request permission from the user:
+```js
+  	// When a button is clicked or on page load run this function:
+    if( 'Notification' in window) {
+        Notification.requestPermission(result => {
+          console.log('User Choice', result);
+          if (result !== 'granted') {
+            console.log('Too bad cannot send notifications and cannot ask again');
+          } else {
+            // Have permission, show confirm notification.
+            new Notification('Successfully allowed to show Notifications', {
+              body: 'Some description text here'
+            })
+          }
+        })
+    }
+```
+
+#### Notifications from Service Worker and options.
+```js
+  // If service workers and notifications are enabled
+  navigator.serviceWorker.ready
+    .then(swreg => {
+      swreg.showNotification('Successfully allowed to show Notifications', {
+        body: 'Some description text here',
+        icon: 'path/to/icon', // Show to right of notification
+        image: 'path/to/img',
+        dir: 'ltr', // Direction of text
+        lang: 'en-US',
+        vibrate: [100, 50, 200], // vibrate pattern
+        badge: 'path/to/badge' // Android only badge for notifications,
+        tag: 'id-of-tag', // Allows to stack notications
+        renotify: true, // Allows to renotify the user of same notifications
+        actions: [
+          {action: 'confirm', title: 'OK', icon: 'icon/to/confirm' },
+          {action: 'cancel', title: 'cancel', icon: 'icon/to/cancel' }
+        ]
+      })
+    })
+```
+
+Since notifications can be clicked on when the user is not inside our app and since it is a system feature we can react to click events on our notifications inside our service worker file like so:
+
+```
+  self.addEventListener('notificationclick', (e) => {
+    const { notification, action } = event;
+    
+    // Check which notification if they interact with it we can close it
+    notification.close()
+  })
+  
+  // This gets triggered when the user swipes away or closes the notification
+  self.addEventListener('notificationclose', (e) => {
+    // Do something...
+  })
+```
+
+## Other:
 - Picture element allows you to specify images for different screen sizes.
 - Img srcset is a property on the img element which you can also specify the image size for certain sizes.
  
