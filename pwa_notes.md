@@ -446,6 +446,8 @@ self.addEventListener('push', (event) => {
 })
 
 
+## Workbox
+
 ## Other:
 - Picture element allows you to specify images for different screen sizes.
 - Img srcset is a property on the img element which you can also specify the image size for certain sizes.
