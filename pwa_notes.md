@@ -431,7 +431,20 @@ Server Side
     
     webpush.sendNotification(pushConfig, JSON.stringify({ somedata: here })
   })
+  
+Listening to server side push message
 ```
+self.addEventListener('push', (event) => {
+  console.log('Push Notification recived', event);
+  const data = JSON.parse(event.data.text());
+  
+  const pushNotifcationsOptions = { ... } // see options from earlier
+  
+  event.waitUntil(
+    self.registration.showNotification('some-title', pushNotifcationsOptions)
+  )
+})
+
 
 ## Other:
 - Picture element allows you to specify images for different screen sizes.
