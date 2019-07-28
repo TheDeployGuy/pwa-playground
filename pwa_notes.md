@@ -146,7 +146,7 @@ You can provide on demand cache, you could provide the user with a button to sav
 
 You can also provide a fallback page instead of the default browser offline page.
 
-```
+```js 
   .catch(function(err) {
     return caches.open(CACHE_STATIC_NAME).then(function(cache) {
       return cache.match("/offline.html");
@@ -185,7 +185,7 @@ The regular IndexDB API is very "callbacky" and can be hard to work with but the
 Service workers can import other packages via the `importScripts('path/to/script')` useful for the cas eof importing the idb package.
 
 Storing a json object in indexDB:
-```
+```js 
 // Setup a connect to idb
 var dbPromise = idb.open('store-name', 1, function(db) {
   if(!db.objectStoreNames.contains('posts')) {
@@ -217,7 +217,7 @@ return res;
 
 Getting data out of IndexDB
 
-```
+```js 
 function readAllData(store) {
    return dbPromise
     .then(function(db) {
@@ -241,7 +241,7 @@ readAllData('store-name)
 ```
 
 Handling when item are deleted from the network source. Since using put only overwrites if there you will have a flash of old data.
-```
+```js 
   // Once approach is clearing all the data just before you rewrite the data to indexDB
   function clearAllData(store) {
    return dbPromise
@@ -274,7 +274,7 @@ Allow us to send information to the server even when we are offline. It even all
 
 This is done as part of a sync task in the SW, e.g in an on click hander we can:
 In the file where you are sending the data to the backend
-```
+```js 
   // Check for service worker availablity and for SyncManager available
   if('serviceWorker' in navigator && 'SyncManager' in window) {
     navigator.serviceWorker.ready
@@ -293,7 +293,7 @@ In the file where you are sending the data to the backend
 ```
 
 In your service worker file
-```
+```js
   // Sync event gets triggered if an internet connection is restablisted / also if we always had an internet connection.
   self.addEventListener('sync', () => {
     console.log('[Service Worker] Background Syncing', event);
@@ -373,7 +373,7 @@ Before we can use the notification API we need to request permission from the us
 
 Since notifications can be clicked on when the user is not inside our app and since it is a system feature we can react to click events on our notifications inside our service worker file like so:
 
-```
+```js
   self.addEventListener('notificationclick', (e) => {
     const { notification, action } = event;
     
@@ -388,7 +388,7 @@ Since notifications can be clicked on when the user is not inside our app and si
 ```
 
 Creating a Push Subscription (Client side)
-```
+```js
   let reg;
   navigator.serviceWorker.ready
     .then(swreg => {
@@ -416,7 +416,7 @@ Creating a Push Subscription (Client side)
 ```
 
 Server Side
-```
+```js
   // In some API handler
   webpush.setVapidDetails('mailto:email-client@company.com', 'PUBLIC-KEY-HERE', 'PRIVATE-KEY-HERE');
   const subscriptionsFromDB = someWayToGetSubFromDB()
@@ -433,7 +433,7 @@ Server Side
   })
   
 Listening to server side push message
-```
+```js
 self.addEventListener('push', (event) => {
   console.log('Push Notification recived', event);
   const data = JSON.parse(event.data.text());
