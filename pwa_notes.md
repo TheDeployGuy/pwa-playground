@@ -387,6 +387,52 @@ Since notifications can be clicked on when the user is not inside our app and si
   })
 ```
 
+Creating a Push Subscription (Client side)
+```
+  let reg;
+  navigator.serviceWorker.ready
+    .then(swreg => {
+      reg = swreg;
+      swreg.pushManager.getSubscription()
+      }
+      );
+    .then(sub => {
+      if(sub === null) {
+        // Create a new subscription
+        // To send push notifications surucely you need a vapid key. This can used using web-push package from npm
+        const vapidPublicKey = 'SOME-KEY-HERE'
+        // Push manager expects an int 8 array so we need to convert it using an helper function which can be found online.
+        const convertedVapidPublicKey = urlBase64ToUint8Array(validPublicKey)
+        return reg.pushManager.subscribe({
+          userVisibleOnly: true, // Only show the to the specific user
+          applicationServerKey: convertedVapidPublicKey
+        });
+      } else {
+        // We have a subscription
+      }
+    })
+    .then(newSub => sendSubToBackend) // Helper (for notes purposes) to store the newSub data to your backend.
+    .then(res => displayConfirmNotifcation) // Helper to show user success messages
+```
+
+Server Side
+```
+  // In some API handler
+  webpush.setVapidDetails('mailto:email-client@company.com', 'PUBLIC-KEY-HERE', 'PRIVATE-KEY-HERE');
+  const subscriptionsFromDB = someWayToGetSubFromDB()
+  subscriptionsFromDB.forEach(val => {
+    const pushConfig = {
+      endpoint: val.endpoint,
+      keys: {
+        auth: val.auth,
+        p256dh: val.p256dh
+      }
+    }
+    
+    webpush.sendNotification(pushConfig, JSON.stringify({ somedata: here })
+  })
+```
+
 ## Other:
 - Picture element allows you to specify images for different screen sizes.
 - Img srcset is a property on the img element which you can also specify the image size for certain sizes.
