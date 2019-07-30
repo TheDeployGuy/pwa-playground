@@ -448,6 +448,9 @@ self.addEventListener('push', (event) => {
 
 ## Workbox
 
+Workbox allows for automated service worker management, gives us a bunch of utils we can use to simplify our interaction with the service worker. Workbox comes with a cli that allows us to automate the creation of the sw.js file, you can customize it with a workbox-cli.config.js file.
+
+
 ## Other:
 - Picture element allows you to specify images for different screen sizes.
 - Img srcset is a property on the img element which you can also specify the image size for certain sizes.
