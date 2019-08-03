@@ -450,6 +450,9 @@ self.addEventListener('push', (event) => {
 
 Workbox allows for automated service worker management, gives us a bunch of utils we can use to simplify our interaction with the service worker. Workbox comes with a cli that allows us to automate the creation of the sw.js file, you can customize it with a workbox-cli.config.js file.
 
+## PWA for SPAs
+- Create react app you need to eject the app, also CRA uses workbox for the service worker file.
+- Angular you can use the cli to scaffold out the application. (Add a manifest file, add service work file, and edit the angular-cli.json to add the serviceWorker property.). Install @angular/service-worker and run a few commands.
 
 ## Other:
 - Picture element allows you to specify images for different screen sizes.
