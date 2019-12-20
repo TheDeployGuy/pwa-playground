@@ -104,7 +104,7 @@ self.addEventListener("install", event => {
 self.addEventListener("activate", event => {
   console.log("[Service worker] Activating SW...", event);
   event.waitUntil(
-      cache.keys()
+      caches.keys()
         .then(keys => {
             return Promise.all(keys.map(key => {
                 if(key !== CACHE_STATIC_NAME && key !== CACHE_DYNAMIC_NAME) {
