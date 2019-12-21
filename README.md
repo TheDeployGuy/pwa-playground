@@ -433,6 +433,7 @@ Server Side
     
     webpush.sendNotification(pushConfig, JSON.stringify({ somedata: here })
   })
+```
   
 Listening to server side push message
 ```js
@@ -446,7 +447,7 @@ self.addEventListener('push', (event) => {
     self.registration.showNotification('some-title', pushNotifcationsOptions)
   )
 })
-
+```
 
 ## Workbox
 
